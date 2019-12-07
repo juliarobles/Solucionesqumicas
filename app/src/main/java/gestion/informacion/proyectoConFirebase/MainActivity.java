@@ -1,5 +1,6 @@
 package gestion.informacion.proyectoConFirebase;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 if((pass.getText().length() > 0) && (user.getText().length() > 0)){
                     mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -42,10 +43,10 @@ public class MainActivity extends AppCompatActivity {
                             Usuario u = dataSnapshot.child("tUsuario").child(user.getText().toString()).getValue(Usuario.class);
                             if(u != null && u.getPassword().equals(pass.getText().toString())){
                                 Rol r = dataSnapshot.child("tRol").child(u.getRolName()).getValue(Rol.class);
-                                toast1 = Toast.makeText(getApplicationContext(), u.getRolName() + " y " + r.getRolName(), Toast.LENGTH_SHORT);
-
+                                toast1 = Toast.makeText(getApplicationContext(), "Entra correctamente", Toast.LENGTH_SHORT);
                                 toast1.show();
-                                //Cambiar a muestras dependiendo del permiso
+                                Intent intent = new Intent (v.getContext(), MuestraActivity.class);
+                                startActivityForResult(intent, 0);
                             } else {
                                 toast1 = Toast.makeText(getApplicationContext(), "Contraseña o usuario incorrecto", Toast.LENGTH_SHORT);
                                 toast1.show();

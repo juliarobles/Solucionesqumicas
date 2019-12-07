@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Soluciones químicas</string>
+    <string name="muestra">Muestra</string>
+    <string name="salir">Salir</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="borrar">Borrar</string>
+    <string name="insertar">Insertar</string>
+    <string name="cultivo">Cultivo</string>
+    <string name="hola">hola</string>
+    <string name="hey">hey</string>
+    <string name="nif">NIF</string>
+    <string name="id">ID</string>
+    <string name="lorem">lorem</string>
+    <string name="soluci_n">solución</string>
 </resources>

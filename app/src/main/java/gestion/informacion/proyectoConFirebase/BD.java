@@ -1,11 +1,15 @@
 package gestion.informacion.proyectoConFirebase;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -13,18 +17,27 @@ import java.util.List;
 
 public class BD {
 
-    DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+    private static DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+    /*
+    private static List<Muestra> todasMuestras;
+    private static List<Solucion> todasSoluciones;
 
-    public List<Muestra> listaMuestras(){
-        final List<Muestra> muestras = new ArrayList<>();
+    public BD() {
+        listaMuestras();
+        listaSoluciones();
+    }
+
+    public static void listaMuestras(){
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                todasMuestras = new ArrayList<>();
                 DataSnapshot datosmuestras = dataSnapshot.child("tMuestra");
                 Iterable<DataSnapshot> listamuestras = datosmuestras.getChildren();
 
                 for (DataSnapshot m : listamuestras) {
-                    muestras.add(m.getValue(Muestra.class));
+                    todasMuestras .add(m.getValue(Muestra.class));
+                    Log.i("muestra", m.getValue().toString());
                 }
             }
 
@@ -33,19 +46,19 @@ public class BD {
 
             }
         });
-        return muestras;
     }
 
-    public List<Solucion> listaSoluciones(){
-        final List<Solucion> soluciones = new ArrayList<>();
+    private void listaSoluciones(){
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                todasSoluciones = new ArrayList<>();
                 DataSnapshot datossol = dataSnapshot.child("tSolucion");
                 Iterable<DataSnapshot> listasol = datossol.getChildren();
 
                 for (DataSnapshot m : listasol) {
-                    soluciones.add(m.getValue(Solucion.class));
+                    Log.i("jeje", m.getValue().toString());
+                    todasSoluciones.add(m.getValue(Solucion.class));
                 }
             }
 
@@ -54,9 +67,24 @@ public class BD {
 
             }
         });
-        return soluciones;
     }
 
+    public List<Solucion> getSoluciones(){
+        while(todasSoluciones == null){
+            listaSoluciones();
+        }
+        Log.i("lista", todasSoluciones.toString());
+        return todasSoluciones;
+    }
+
+    public List<Muestra> getMuestras(){
+        while(todasMuestras == null){
+            listaMuestras();
+        }
+        Log.i("lista", todasSoluciones.toString());
+        return todasMuestras;
+    }
+*/
     public Solucion sacarSolucionPorId(final int idSol){
         final Solucion[] res = {null};
         db.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -1,39 +1,40 @@
 package gestion.informacion.proyectoConFirebase;
 
 public class Solucion {
-    int id;
-    String solucion, uso;
+    private int ID;
+    private String Solucion;
+    private String Uso;
 
-    public Solucion (){
+    public Solucion() {
     }
 
-    public Solucion (int id, String solucion, String uso){
-        this.id = id;
-        this.solucion = solucion;
-        this.uso = uso;
+    public Solucion(int ID, String solucion, String uso) {
+        this.ID = ID;
+        Solucion = solucion;
+        Uso = uso;
     }
 
-    public int getId() {
-        return id;
+    public int getID() {
+        return ID;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getSolucion() {
-        return solucion;
+        return Solucion;
     }
 
     public void setSolucion(String solucion) {
-        this.solucion = solucion;
+        Solucion = solucion;
     }
 
     public String getUso() {
-        return uso;
+        return Uso;
     }
 
     public void setUso(String uso) {
-        this.uso = uso;
+        Uso = uso;
     }
 }
