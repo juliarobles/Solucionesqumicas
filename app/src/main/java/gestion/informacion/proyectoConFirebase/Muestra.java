@@ -47,4 +47,12 @@ public class Muestra {
     public void setSolucion(int solucion) {
         Solucion = solucion;
     }
+
+    @Override
+    public String toString() {
+        return "ID=" + ID +
+                ", NIF_Paciente='" + NIF_Paciente + '\'' +
+                ", Cultivo='" + Cultivo + '\'' +
+                ", Solucion=" + Solucion;
+    }
 }

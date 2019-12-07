@@ -1,13 +1,185 @@
 package gestion.informacion.proyectoConFirebase;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MuestraActivity extends AppCompatActivity {
+
+    private ListView muestras, soluciones;
+    private DatabaseReference db;
+    private List<Muestra> todasMuestras = new ArrayList<>();
+    private List<Solucion> todasSoluciones = new ArrayList<>();
+    private ArrayAdapter adaptador1, adaptador2;
+    private static EditText id, nif, cultivo;
+    private Muestra muestraActiva;
+    private Solucion solucionSeleccionada;
+    private Button insertar, actualizar, borrar, salir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muestra);
+
+        muestras = findViewById(R.id.listaMuestra);
+        soluciones = findViewById(R.id.listaSoluciones);
+        id = findViewById(R.id.id);
+        nif = findViewById(R.id.nif);
+        cultivo = findViewById(R.id.cultivo);
+        insertar = findViewById(R.id.insertar);
+        actualizar = findViewById(R.id.actualizar);
+        borrar = findViewById(R.id.borrar);
+        salir = findViewById(R.id.salir);
+
+        adaptador1 = new ArrayAdapter<Muestra>(this, android.R.layout.simple_list_item_1, todasMuestras);
+        adaptador2 = new ArrayAdapter<Solucion>(this, android.R.layout.simple_list_item_1, todasSoluciones);
+
+        muestras.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        soluciones.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        muestras.setAdapter(adaptador1);
+        soluciones.setAdapter(adaptador2);
+
+        db = FirebaseDatabase.getInstance().getReference();
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot datosmuestras = dataSnapshot.child("tMuestra");
+                Iterable<DataSnapshot> listamuestras = datosmuestras.getChildren();
+
+                for (DataSnapshot m : listamuestras) {
+                    todasMuestras.add(m.getValue(Muestra.class));
+                    Log.i("muestra", m.getValue().toString());
+                }
+
+                adaptador1.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataSnapshot datossol = dataSnapshot.child("tSolucion");
+                Iterable<DataSnapshot> listasol = datossol.getChildren();
+
+                for (DataSnapshot m : listasol) {
+                    Log.i("jeje", m.getValue().toString());
+                    todasSoluciones.add(m.getValue(Solucion.class));
+                }
+
+                adaptador2.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        muestras.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                muestraActiva = (Muestra)adaptador1.getItem(position);
+                actualizarMuestra();
+            }
+        });
+
+        soluciones.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                marcarSoluciones(position);
+            }
+        });
+
+        actualizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(muestraActiva != null){
+                    BD mibd = new BD();
+                    if(!cultivo.getText().equals(muestraActiva.getCultivo())){
+                        mibd.actualizarCultivoMuestra(muestraActiva.getID(), cultivo.getText().toString());
+                        muestraActiva.setCultivo(cultivo.getText().toString());
+                    }
+                    if(!nif.getText().equals(muestraActiva.getNIF_Paciente())){
+                        mibd.actualizarNIFPacienteMuestra(muestraActiva.getID(), nif.getText().toString());
+                        muestraActiva.setNIF_Paciente(nif.getText().toString());
+                    }
+                    if(solucionSeleccionada != null && muestraActiva.getSolucion() != solucionSeleccionada.getID()){
+                        mibd.actualizarSolucionMuestra(muestraActiva.getID(), solucionSeleccionada.getID());
+                        muestraActiva.setSolucion(solucionSeleccionada.getID());
+                    }
+                    if(!id.getText().equals(muestraActiva.getID())){
+                        mibd.actualizarIDMuestra(muestraActiva.getID(), Integer.parseInt(id.getText().toString()));
+                        muestraActiva.setID(Integer.parseInt(id.getText().toString()));
+                    }
+
+                    adaptador1.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    private void actualizarMuestra(){
+        if(muestraActiva != null){
+            id.setText(Integer.toString(muestraActiva.getID()));
+            cultivo.setText(muestraActiva.getCultivo());
+            nif.setText(muestraActiva.getNIF_Paciente());
+            int posSol = buscarIndex(muestraActiva.getSolucion());
+            marcarSoluciones(posSol);
+            Log.i("pos", Integer.toString(posSol));
+
+        }
+    }
+
+    private int buscarIndex(int solucion) {
+        int index = -1, i = 0;
+        while(index == -1 && i < todasSoluciones.size()){
+            if(todasSoluciones.get(i).getID() == solucion){
+                index = i;
+            } else {
+                i++;
+            }
+        }
+        return index;
+    }
+
+    private void marcarSoluciones(final int posSol) {
+        if (soluciones != null && posSol >= 0) {
+            solucionSeleccionada = todasSoluciones.get(posSol);
+            soluciones.clearFocus();
+            soluciones.requestFocusFromTouch();
+            soluciones.post(new Runnable() {
+                @Override
+                public void run() {
+                    soluciones.setItemChecked(posSol, true);
+                    soluciones.setSelection(posSol);
+                }
+            });
+        } else {
+            solucionSeleccionada = null;
+        }
     }
 }

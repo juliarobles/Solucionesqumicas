@@ -1,5 +1,10 @@
 package gestion.informacion.proyectoConFirebase;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+
+import java.util.Objects;
+
 public class Solucion {
     private int ID;
     private String Solucion;
@@ -37,4 +42,10 @@ public class Solucion {
     public void setUso(String uso) {
         Uso = uso;
     }
+
+    @Override
+    public String toString() {
+        return Solucion;
+    }
+
 }

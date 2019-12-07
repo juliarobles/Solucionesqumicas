@@ -22,10 +22,9 @@
             android:textSize="40sp"/>
 
         <ListView
+            android:id="@+id/listaMuestra"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="6">
-        </ListView>
+            android:layout_height="200dp" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -43,13 +42,13 @@
             </TextView>
 
             <EditText
-                android:text="lorem"
-                android:textSize="30dp"
-
+                android:id="@+id/id"
                 android:layout_width="0dp"
+
+                android:layout_height="match_parent"
                 android:layout_weight="4"
-                android:layout_height="match_parent">
-            </EditText>
+                android:text="lorem"
+                android:textSize="30dp"></EditText>
 
         </LinearLayout>
 
@@ -69,13 +68,13 @@
             </TextView>
 
             <EditText
-                android:text="hey"
-                android:textSize="30dp"
-
+                android:id="@+id/nif"
                 android:layout_width="0dp"
+
+                android:layout_height="match_parent"
                 android:layout_weight="4"
-                android:layout_height="match_parent">
-            </EditText>
+                android:text="hey"
+                android:textSize="30dp"></EditText>
 
         </LinearLayout>
 
@@ -86,21 +85,20 @@
             android:layout_weight="2">
 
             <TextView
-                android:text="Cultivo"
-                android:textSize="30dp"
-                android:layout_width="0dp"
+                android:layout_width="18dp"
+                android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:layout_height="match_parent">
-            </TextView>
+                android:text="Cultivo"
+                android:textSize="30dp"></TextView>
 
-            <TextView
-                android:text="hola"
-                android:textSize="30dp"
+            <EditText
+                android:id="@+id/cultivo"
+                android:layout_width="199dp"
 
-                android:layout_width="0dp"
-                android:layout_weight="4"
-                android:layout_height="match_parent">
-            </TextView>
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="lorem"
+                android:textSize="30dp"></EditText>
 
         </LinearLayout>
 
@@ -111,19 +109,18 @@
             android:layout_weight="4">
 
             <TextView
-                android:text="solución"
-                android:textSize="30dp"
+                android:layout_width="238dp"
+                android:layout_height="match_parent"
 
-                android:layout_width="0dp"
                 android:layout_weight="2"
-                android:layout_height="match_parent">
-            </TextView>
+                android:text="solución"
+                android:textSize="30dp"></TextView>
 
             <ListView
-                android:layout_width="0dp"
+                android:id="@+id/listaSoluciones"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="4">
-            </ListView>
+                android:layout_weight="2" />
 
         </LinearLayout>
 
@@ -134,32 +131,33 @@
             android:layout_weight="2">
 
             <Button
-                android:text="Insertar"
+                android:id="@+id/insertar"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
-            </Button>
+                android:text="Insertar"></Button>
 
             <Button
-                android:text="Borrar"
+                android:id="@+id/borrar"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
-            </Button>
+                android:text="Borrar"></Button>
 
             <Button
-                android:text="Actualizar"
+                android:id="@+id/actualizar"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
-            </Button>
+                android:text="Actualizar"></Button>
+
             <Button
 
-                android:text="Salir"
+                android:id="@+id/salir"
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_height="match_parent">
-            </Button>
+                android:text="Salir"></Button>
 
         </LinearLayout>
 
