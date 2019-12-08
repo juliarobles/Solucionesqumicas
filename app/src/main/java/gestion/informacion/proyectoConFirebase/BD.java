@@ -85,13 +85,20 @@ public class BD {
         return todasMuestras;
     }
 */
-    public Solucion sacarSolucionPorId(final int idSol){
-        final Solucion[] res = {null};
-        db.addListenerForSingleValueEvent(new ValueEventListener() {
 
+    public void actualizarCultivoMuestra(int id, String cultivo){
+        db.child("tMuestra").child(Integer.toString(id)).child("cultivo").setValue(cultivo);
+    }
+
+    public void actualizarIDMuestra(final int id, final int idNuevo){
+        db.child("tMuestra").child(Integer.toString(id)).child("id").setValue(idNuevo);
+        db.child("tMuestra").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                res[0] = dataSnapshot.child("tSolucion").child(Integer.toString(idSol)).getValue(Solucion.class);
+                Muestra m = dataSnapshot.child(Integer.toString(id)).getValue(Muestra.class);
+                Log.i("sad", m.toString());
+                db.child("tMuestra").child(Integer.toString(id)).removeValue();
+                db.child("tMuestra").child(Integer.toString(idNuevo)).setValue(new Muestra(m.getID(), m.getNIF_Paciente(), m.getCultivo(), m.getSolucion()));
             }
 
             @Override
@@ -99,33 +106,21 @@ public class BD {
 
             }
         });
-
-        return res[0];
-    }
-
-
-    public void actualizarCultivoMuestra(int id, String cultivo){
-        db.child("tMuestra").child(Integer.toString(id)).child("Cultivo").setValue(cultivo);
-    }
-
-    public void actualizarIDMuestra(int id, int idNuevo){
-        db.child("tMuestra").child(Integer.toString(id)).child("ID").setValue(idNuevo);
     }
 
     public void actualizarNIFPacienteMuestra(int id, String nif){
-        db.child("tMuestra").child(Integer.toString(id)).child("NIF_PACIENTE").setValue(nif);
+        db.child("tMuestra").child(Integer.toString(id)).child("nif_Paciente").setValue(nif);
     }
 
     public void actualizarSolucionMuestra(int id, int idSol){
-        db.child("tMuestra").child(Integer.toString(id)).child("Solucion").setValue(idSol);
+        db.child("tMuestra").child(Integer.toString(id)).child("solucion").setValue(idSol);
     }
 
     public void borrarMuestra(int id){
         db.child("tMuestra").child(Integer.toString(id)).removeValue();
     }
 
-    public void addMuestra(int id, String cultivo, String nifPaciente, int solucion){
-        db.child("tMuestra").child(Integer.toString(id)).setValue(new Muestra(id, nifPaciente, cultivo, solucion));
+    public void addMuestra(final int ID, final String Cultivo, final String NIF_Paciente, final int Solucion){
+        db.child("tMuestra").child(Integer.toString(ID)).setValue(new Muestra(ID, NIF_Paciente, Cultivo, Solucion));
     }
-
 }

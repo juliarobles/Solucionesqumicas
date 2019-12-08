@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,6 +34,7 @@ public class MuestraActivity extends AppCompatActivity {
     private Muestra muestraActiva;
     private Solucion solucionSeleccionada;
     private Button insertar, actualizar, borrar, salir;
+    private Toast toast1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,7 @@ public class MuestraActivity extends AppCompatActivity {
 
                 for (DataSnapshot m : listamuestras) {
                     todasMuestras.add(m.getValue(Muestra.class));
-                    Log.i("muestra", m.getValue().toString());
+                    //Log.i("muestra", m.getValue().toString());
                 }
 
                 adaptador1.notifyDataSetChanged();
@@ -131,13 +133,48 @@ public class MuestraActivity extends AppCompatActivity {
                         mibd.actualizarSolucionMuestra(muestraActiva.getID(), solucionSeleccionada.getID());
                         muestraActiva.setSolucion(solucionSeleccionada.getID());
                     }
-                    if(!id.getText().equals(muestraActiva.getID())){
+
+                    if(Integer.parseInt(id.getText().toString()) != muestraActiva.getID()){
                         mibd.actualizarIDMuestra(muestraActiva.getID(), Integer.parseInt(id.getText().toString()));
                         muestraActiva.setID(Integer.parseInt(id.getText().toString()));
                     }
 
                     adaptador1.notifyDataSetChanged();
+                    toast1 = Toast.makeText(getApplicationContext(), "Actualizado correctamente", Toast.LENGTH_SHORT);
+                    toast1.show();
                 }
+            }
+        });
+
+        borrar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if(muestraActiva != null){
+                    BD mibd = new BD();
+                    mibd.borrarMuestra(muestraActiva.getID());
+                    todasMuestras.remove(muestraActiva);
+                    muestraActiva = null;
+                    adaptador1.notifyDataSetChanged();
+                    toast1 = Toast.makeText(getApplicationContext(), "Borrado correctamente", Toast.LENGTH_SHORT);
+                    toast1.show();
+                }
+
+            }
+        });
+
+        insertar.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                BD mibd = new BD();
+                    mibd.addMuestra(Integer.parseInt(id.getText().toString()), cultivo.getText().toString(), nif.getText().toString(), solucionSeleccionada.getID());
+                    Muestra nueva =  new Muestra(Integer.parseInt(id.getText().toString()), nif.getText().toString(), cultivo.getText().toString(), solucionSeleccionada.getID());
+                    todasMuestras.add(nueva);
+                    muestraActiva = nueva;
+                    adaptador1.notifyDataSetChanged();
+                    toast1 = Toast.makeText(getApplicationContext(), "Insertado correctamente", Toast.LENGTH_SHORT);
+                    toast1.show();
             }
         });
     }
