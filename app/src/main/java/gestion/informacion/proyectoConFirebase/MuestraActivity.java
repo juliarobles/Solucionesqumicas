@@ -3,8 +3,6 @@ package gestion.informacion.proyectoConFirebase;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +31,7 @@ public class MuestraActivity extends AppCompatActivity {
     private static EditText id, nif, cultivo;
     private Muestra muestraActiva;
     private Solucion solucionSeleccionada;
-    private Button insertar, actualizar, borrar, salir;
+    private Button insertar, actualizar, borrar, limpiar;
     private Toast toast1;
 
     //TODO las clases permisos sacadas de la base de datos
@@ -56,7 +54,7 @@ public class MuestraActivity extends AppCompatActivity {
         insertar = findViewById(R.id.insertar);
         actualizar = findViewById(R.id.actualizar);
         borrar = findViewById(R.id.borrar);
-        salir = findViewById(R.id.salir);
+        limpiar = findViewById(R.id.limpiar);
 
         adaptador1 = new ArrayAdapter<Muestra>(this, android.R.layout.simple_list_item_1, todasMuestras);
         adaptador2 = new ArrayAdapter<Solucion>(this, android.R.layout.simple_list_item_1, todasSoluciones);
@@ -73,6 +71,25 @@ public class MuestraActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 permisoSoluciones = dataSnapshot.child("tPermiso").child(rolName+"soluciones").getValue(Permiso.class);
                 permisoFormulas = dataSnapshot.child("tPermiso").child(rolName+"formulas").getValue(Permiso.class);
+
+                if (!permisoSoluciones.isInsertar()){
+                    insertar.setEnabled(false);
+                } else {
+                    insertar.setEnabled(true);
+                }
+
+                if (!permisoSoluciones.isModificar()){
+                    actualizar.setEnabled(false);
+                } else {
+                    actualizar.setEnabled(true);
+                }
+
+                if (!permisoSoluciones.isBorrar()){
+                    borrar.setEnabled(false);
+                } else {
+                    borrar.setEnabled(true);
+                }
+
 
                 DataSnapshot datosmuestras = dataSnapshot.child("tMuestra");
                 Iterable<DataSnapshot> listamuestras = datosmuestras.getChildren();
@@ -188,11 +205,14 @@ public class MuestraActivity extends AppCompatActivity {
             }
         });
 
-        salir.setOnClickListener(new View.OnClickListener() {
+        limpiar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Prueba de que los valores de permiso se sacan bien. Ahora hay que modificar los botones para que hagan lo que deberian hacer.
-                toast(String.valueOf(permisoFormulas.insertar)+String.valueOf(permisoSoluciones.modificar));
+                id.setText("");
+                nif.setText("");
+                cultivo.setText("");
+                marcarSoluciones(-1);
+                muestraActiva = null;
             }
         });
     }
@@ -235,6 +255,7 @@ public class MuestraActivity extends AppCompatActivity {
             });
         } else {
             solucionSeleccionada = null;
+            soluciones.clearFocus();
         }
     }
 
