@@ -42,10 +42,13 @@ public class MainActivity extends AppCompatActivity {
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Usuario u = dataSnapshot.child("tUsuario").child(user.getText().toString()).getValue(Usuario.class);
                             if(u != null && u.getPassword().equals(pass.getText().toString())){
-                                Rol r = dataSnapshot.child("tRol").child(u.getRolName()).getValue(Rol.class);
+
+                                String rolName = dataSnapshot.child("tRol").child(u.getRolName()).getKey();
+                                Intent intent = new Intent (v.getContext(), MuestraActivity.class);
+                                intent.putExtra("rolNameIntent", rolName);
+
                                 toast1 = Toast.makeText(getApplicationContext(), "Entra correctamente", Toast.LENGTH_SHORT);
                                 toast1.show();
-                                Intent intent = new Intent (v.getContext(), MuestraActivity.class);
                                 startActivityForResult(intent, 0);
                             } else {
                                 toast1 = Toast.makeText(getApplicationContext(), "Contraseña o usuario incorrecto", Toast.LENGTH_SHORT);

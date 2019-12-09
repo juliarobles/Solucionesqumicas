@@ -36,16 +36,23 @@ public class MuestraActivity extends AppCompatActivity {
     private Button insertar, actualizar, borrar, salir;
     private Toast toast1;
 
+    //TODO las clases permisos sacadas de la base de datos
+    private Permiso permisoSoluciones,permisoFormulas;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muestra);
+
+        final String rolName = getIntent().getStringExtra("rolNameIntent");
 
         muestras = findViewById(R.id.listaMuestra);
         soluciones = findViewById(R.id.listaSoluciones);
         id = findViewById(R.id.id);
         nif = findViewById(R.id.nif);
         cultivo = findViewById(R.id.cultivo);
+
+        //botones
         insertar = findViewById(R.id.insertar);
         actualizar = findViewById(R.id.actualizar);
         borrar = findViewById(R.id.borrar);
@@ -64,6 +71,9 @@ public class MuestraActivity extends AppCompatActivity {
         db.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                permisoSoluciones = dataSnapshot.child("tPermiso").child(rolName+"soluciones").getValue(Permiso.class);
+                permisoFormulas = dataSnapshot.child("tPermiso").child(rolName+"formulas").getValue(Permiso.class);
+
                 DataSnapshot datosmuestras = dataSnapshot.child("tMuestra");
                 Iterable<DataSnapshot> listamuestras = datosmuestras.getChildren();
 
@@ -177,6 +187,14 @@ public class MuestraActivity extends AppCompatActivity {
                     toast1.show();
             }
         });
+
+        salir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO Prueba de que los valores de permiso se sacan bien. Ahora hay que modificar los botones para que hagan lo que deberian hacer.
+                toast(String.valueOf(permisoFormulas.insertar)+String.valueOf(permisoSoluciones.modificar));
+            }
+        });
     }
 
     private void actualizarMuestra(){
@@ -218,5 +236,11 @@ public class MuestraActivity extends AppCompatActivity {
         } else {
             solucionSeleccionada = null;
         }
+    }
+
+    private void toast(String message)
+    {
+        Toast.makeText(this, message,
+                Toast.LENGTH_LONG).show();
     }
 }
